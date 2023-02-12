@@ -1,0 +1,74 @@
+db.Student.insertOne({})
+db.Student.insertMany([{},{}])
+db.Student.deleteOne({name:"Pasan"})
+db.Student.update({name:"Pasan"},{$unset:{age:0}}) - delete specific values .
+db.Cansel.drop() - delete collection
+db.Student.updateMany({age:22},{$set:{status:"Youngers"}}) - update Many
+db.Student.find({},{name:1,_id:0})
+db.Student.find({age:22},{name:1,_id:0})
+crit = {name:1,address:1,_id:0} ----  db.Student.find({},crit)
+db.Student.find({name:"Dimuthu"}).count()
+db.Student.find().skip(1).limit(4)
+db.Student.find().sort({age:-1})
+db.Student.find({},{name:1,_id:0})
+db.Student.updateMany({},{$set:{salary:0}})
+db.Student.updateMany({address:"colombo"},{$set:{salary:150000}})
+db.Student.find().sort({$natural:-1}).limit(2)
+db.inventory.find({Status:{$eq:"A"}}) / db.inventory.find({Status:"A"})
+db.inventory.find({Quantity:{$lt:30}})
+db.inventory.find({Quantity:{$gt:30},Status:"A"}) / db.inventory.find({$and:[{Quantity:{$gt:30}},{Status:{$eq:"A"}}]})
+db.inventory.find({$and:[{Quantity:{$gt:50}},{Item:{$eq:"Post Card"}}]})
+db.inventory.find({$and:[{Quantity:{$gt:50}},{Item:{$eq:"Post Card"}}]}).count()
+db.inventory.find({Quantity:{$ne:100}})
+db.inventory.find({$or:[{Status:{$eq:"A"}},{Quantity:{$lt:70}}]})
+db.inventory.find({Item:{$regex:/^P/}}) - REGEX (FIND)
+
+AGGREGATE
+db.inventory.aggregate([{$match:{Status:'A'}}])
+db.inventory.aggregate([{$match:{Status:"A"}},{$group:{_id:1001,total_value:{$sum:'$Quantity'}}}])
+db.order.find({size:'medium'})
+db.order.aggregate([{$match:{size:"medium"}}])
+db.order.aggregate([{$match:{size:"medium"}},{$group:{_id:"$name",total:{$sum:'$quantity'}}}])
+db.order.aggregate([{$group:{_id:"$name",total:{$sum:'$quantity'}}}])
+db.order.find({$and:[{date:{$gt:ISODate("2020-01-30T00:00:00.000Z")}},{date:{$lt:ISODate("2022-01-03T00:00:00.000Z")}}]})
+db.order.aggregate([{$group:{_id:'',name:{$max:'$price'}}}])
+db.order.aggregate([{$group:{_id:'',name:{$min:'$price'}}}])
+db.order.aggregate([{$group:{_id:'',name:{$average:'$price'}}}])
+db.order.aggregate([{$group:{_id:'',name:{$avg:'$price'}}}])
+db.order.aggregate([{$group:{_id:'',name:{$first:'$price'}}}])
+db.order.aggregate([{$group:{_id:'$name',name:{$last:'$price'}}}])
+db.order.aggregate([{$group:{_id:'$name',name:{$min:'$price'}}}])
+db.Student.aggregate({$match:{$or:[{Section:"A"},{Section:"B"}]}})
+db.Student.aggregate([{$group:{_id:'$Section',count:{$sum:1}}}])
+db.Student.aggregate([{$group:{_id:'$Section',total_num_of_student:{$sum:1},max_age:{$max:'$Age'}}}])
+db.Student.aggregate([{$match:{Age:{$gt:30}}}])
+db.Student.find({Age:{$gt:30}})
+db.Student.find().sort({Age:-1})
+db.Student.aggregate([{$sort:{Age:-1}}])
+db.Student.aggregate([{$match:{Section:'B'}},{$sort:{Age:-1}},{$limit:1}])
+db.Student.aggregate([{$unwind:"$Subject"}])
+mongoimport --jsonArray -d Company -c persons --file "C:\Users\dimut\Desktop\persons.json"
+
+FirebaseNode
+
+npm install firebase
+Service Account wala GenerateKey
+npm install firebase-admin --save
+
+
+var admin = require("firebase-admin");
+var serviceAccount = require("./ServiceAccount.json");
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount)
+});
+
+const db = admin.firestore();
+let uniRef = db.collection("University");
+uniRef.get().then((querySnapshot)=>{
+    querySnapshot.forEach((document)=>{
+        console.log(document.data());
+        console.log(document.data().Name);
+    })
+})
+
+node .\index.js  -- for run
