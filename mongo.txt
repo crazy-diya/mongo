@@ -56,19 +56,59 @@ Service Account wala GenerateKey
 npm install firebase-admin --save
 
 
+
 var admin = require("firebase-admin");
 var serviceAccount = require("./ServiceAccount.json");
+
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount)
 });
 
 const db = admin.firestore();
+
 let uniRef = db.collection("University");
-uniRef.get().then((querySnapshot)=>{
-    querySnapshot.forEach((document)=>{
-        console.log(document.data());
-        console.log(document.data().Name);
-    })
-})
+// //Retriev
+// uniRef.get().then((querySnapshot)=>{
+//     querySnapshot.forEach((document)=>{
+//         console.log(document.data());
+//         // console.log(document.data().Name);
+//     })
+// })
+
+// //Create
+// const createData = {age:64, address: 'Ampara', Name:'Ruwan'};
+// uniRef.doc().set(createData).then((success)=>{
+//     console.log("successfully Store data!");
+// });
+
+// Update
+// uniRef.doc("iKI49sgpyAnip3a7bqBV").update({
+//     age: 00,
+//   }).then(() => {
+//     console.log("Document successfully updated!");
+//   }).catch(error => {
+//     console.error("Error updating document: ", error);
+//   });
+
+uniRef
+  .where("Name", "==", "Kamal")
+  .get()
+  .then(snapshot => {
+    // Get the first (and only) document from the query
+    const document = snapshot.docs[0];
+
+    console.log(document.data());
+    // Update the document
+    return document.ref.update({
+      age: 22,
+      address: "turiky"
+    });
+  })
+  .then(() => {
+    console.log("Document successfully updated!");
+  })
+  .catch(error => {
+    console.error("Error updating document: ", error);
+  });
 
 node .\index.js  -- for run
